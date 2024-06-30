@@ -19,6 +19,8 @@
 #include <stdlib.h>
 
 #include "logging.h"
+#include "platform.h"
+#include "renderer.h"
 
 #define VERSION "0.1.0"
 
@@ -36,6 +38,16 @@ main(void)
 
 	app = game.get_app_info();
 	INFO("loaded %s", app.app_name);
+
+	init_window(&app);
+
+	while (!should_close()) {
+		poll_events();
+		start_frame();
+		end_frame();
+	}
+
+	shutdown_window();
 
 	return 0;
 }
@@ -76,6 +88,7 @@ load_game(const char *lib_path, game_api *game, void *old_lib)
 	}
 
 	engine->vlog_output = vlog_output;
+	engine->request_close = request_close;
 
 	return lib_handle;
 }

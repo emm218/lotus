@@ -34,6 +34,7 @@ typedef struct {
 
 typedef struct {
 	void (*vlog_output)(const char *, va_list);
+	void (*request_close)(void);
 } engine_api;
 
 typedef engine_api *(get_game_api)(game_api *);

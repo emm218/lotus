@@ -14,37 +14,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include <engine/api.h>
-#include <engine/logging.h>
+#include <glad/glad.h>
 
-#include "engine.h"
+#include "platform.h"
+#include "renderer.h"
 
-engine_api engine;
-
-game_update_f update;
-get_app_info_f get_app_info;
-
-engine_api *
-get_api(game_api *game)
+void
+start_frame(void)
 {
-	game->update = update;
-	game->get_app_info = get_app_info;
-
-	return &engine;
+	glClearColor(0.0, 0.0, 1.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void
-update(long frame_num)
+end_frame()
 {
-	(void)frame_num;
+	swap_buffers();
 }
 
-app_info
-get_app_info(void)
+void
+resize_renderer(int width, int height)
 {
-	return (app_info) {
-		.app_name = "lotus-test",
-		.width = 800,
-		.height = 600,
-	};
+	glViewport(0, 0, width, height);
 }

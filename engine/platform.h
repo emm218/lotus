@@ -14,37 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#ifndef PLATFORM_H
+#define PLATFORM_H
+
 #include <engine/api.h>
-#include <engine/logging.h>
 
-#include "engine.h"
+int init_window(app_info *);
+void shutdown_window(void);
 
-engine_api engine;
+int should_close(void);
+void request_close(void);
+void poll_events(void);
 
-game_update_f update;
-get_app_info_f get_app_info;
+void swap_buffers(void);
 
-engine_api *
-get_api(game_api *game)
-{
-	game->update = update;
-	game->get_app_info = get_app_info;
-
-	return &engine;
-}
-
-void
-update(long frame_num)
-{
-	(void)frame_num;
-}
-
-app_info
-get_app_info(void)
-{
-	return (app_info) {
-		.app_name = "lotus-test",
-		.width = 800,
-		.height = 600,
-	};
-}
+#endif
