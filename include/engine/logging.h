@@ -17,9 +17,6 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include <stdint.h>
-#include <stdlib.h>
-
 #define LOG_ERROR 0
 #define LOG_WARN  1
 #define LOG_INFO  2

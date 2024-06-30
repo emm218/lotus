@@ -16,6 +16,7 @@
  */
 #include <dlfcn.h>
 #include <engine/api.h>
+#include <stdlib.h>
 
 #include "logging.h"
 
@@ -74,7 +75,7 @@ load_game(const char *lib_path, game_api *game, void *old_lib)
 		return lib_handle;
 	}
 
-	engine->_log_output = vlog_output;
+	engine->vlog_output = vlog_output;
 
 	return lib_handle;
 }
