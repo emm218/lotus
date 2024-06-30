@@ -36,47 +36,46 @@
 #endif
 #endif
 
-#define FATAL(message, ...)                                             \
-	_log_output(LOG_STRING("\033[31mFATAL") message "\n", __func__, \
+#define FATAL(msg, ...)                                             \
+	_log_output(LOG_STRING("\033[31mFATAL") msg "\n", __func__, \
 	    ##__VA_ARGS__)
 
-#define ERROR(message, ...)                                             \
-	_log_output(LOG_STRING("\033[31mERROR") message "\n", __func__, \
+#define ERROR(msg, ...)                                             \
+	_log_output(LOG_STRING("\033[31mERROR") msg "\n", __func__, \
 	    ##__VA_ARGS__)
 
 #if LOG_LEVEL >= LOG_WARN
-#define WARN(message, ...)                                              \
-	_log_output(LOG_STRING("\033[33mWARN ") message "\n", __func__, \
+#define WARN(msg, ...)                                              \
+	_log_output(LOG_STRING("\033[33mWARN ") msg "\n", __func__, \
 	    ##__VA_ARGS__)
 #else
-#define WARN(message, ...)
+#define WARN(msg, ...)
 #endif
 
 #if LOG_LEVEL >= LOG_INFO
-#define INFO(message, ...)                                              \
-	_log_output(LOG_STRING("\033[32mINFO ") message "\n", __func__, \
+#define INFO(msg, ...)                                              \
+	_log_output(LOG_STRING("\033[32mINFO ") msg "\n", __func__, \
 	    ##__VA_ARGS__)
 #else
-#define INFO(message, ...)
+#define INFO(msg, ...)
 #endif
 
 #if LOG_LEVEL >= LOG_DEBUG
-#define DEBUG(message, ...)                                             \
-	_log_output(LOG_STRING("\033[36mDEBUG") message "\n", __func__, \
+#define DEBUG(msg, ...)                                             \
+	_log_output(LOG_STRING("\033[36mDEBUG") msg "\n", __func__, \
 	    ##__VA_ARGS__)
 #else
-#define DEBUG(message, ...)
+#define DEBUG(msg, ...)
 #endif
 
 #if LOG_LEVEL >= LOG_TRACE
-#define TRACE(message, ...)                                            \
-	_log_output(LOG_STRING("\033[0mTRACE") message "\n", __func__, \
+#define TRACE(msg, ...)                                            \
+	_log_output(LOG_STRING("\033[0mTRACE") msg "\n", __func__, \
 	    ##__VA_ARGS__)
 #else
-#define TRACE(message, ...)
+#define TRACE(msg, ...)
 #endif
 
-void _log_output(const char *message, ...)
-    __attribute__((format(printf, 1, 2)));
+void _log_output(const char *msg, ...) __attribute__((format(printf, 1, 2)));
 
 #endif // LOG_H

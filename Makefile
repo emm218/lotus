@@ -5,7 +5,7 @@ LDFLAGS+=-fuse-ld=lld
 
 CLEAN:=rm -rf */*.o target/*
 
-MODULES:=engine
+MODULES:=engine game
 
 SRC:=
 

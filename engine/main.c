@@ -14,11 +14,67 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include <engine/logging.h>
+#include <dlfcn.h>
+#include <engine/api.h>
+
+#include "logging.h"
+
+#define VERSION "0.1.0"
+
+static void *load_game(const char *, game_api *, void *);
+
+game_api game;
 
 int
 main(void)
 {
-	INFO("meow!");
+	app_info app;
+	INFO("lotus engine v" VERSION);
+
+	load_game("target/game.so", &game, NULL);
+
+	app = game.get_app_info();
+	INFO("loaded %s", app.app_name);
+
 	return 0;
+}
+
+static void *
+load_game(const char *lib_path, game_api *game, void *old_lib)
+{
+	void *lib_handle;
+	get_game_api *get_api;
+	engine_api *engine;
+
+	INFO("loading %s...", lib_path);
+
+	game->update = NULL;
+
+	if (old_lib && (dlclose(old_lib) != 0)) {
+		ERROR("%s", dlerror());
+		return NULL;
+	}
+
+	lib_handle = dlopen(lib_path, RTLD_LAZY | RTLD_LOCAL);
+	if (!lib_handle) {
+		ERROR("%s", dlerror());
+		return NULL;
+	}
+
+	get_api = (get_game_api *)dlsym(lib_handle, "get_api");
+	if (!get_api) {
+		ERROR("%s", dlerror());
+		if (dlclose(lib_handle) != 0) {
+			ERROR("%s", dlerror());
+		}
+		return NULL;
+	}
+
+	if (!(engine = get_api(game))) {
+		return lib_handle;
+	}
+
+	engine->_log_output = vlog_output;
+
+	return lib_handle;
 }

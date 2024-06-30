@@ -14,21 +14,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include <stdio.h>
+#ifndef API_H
+#define API_H
 
-#include "logging.h"
+#include <stdarg.h>
 
-void
-vlog_output(const char *msg, va_list args)
-{
-	vfprintf(stderr, msg, args);
-}
+typedef struct {
+	const char *app_name;
+	int width, height;
+} app_info;
 
-void
-_log_output(const char *msg, ...)
-{
-	va_list arg_ptr;
-	va_start(arg_ptr, msg);
-	vlog_output(msg, arg_ptr);
-	va_end(arg_ptr);
-}
+typedef void(game_update_f)(long);
+typedef app_info(get_app_info_f)(void);
+
+typedef struct {
+	game_update_f *update;
+	get_app_info_f *get_app_info;
+} game_api;
+
+typedef struct {
+	void (*vlog_output)(const char *, va_list);
+} engine_api;
+
+typedef engine_api *(get_game_api)(game_api *);
+
+#endif
