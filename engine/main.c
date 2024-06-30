@@ -47,6 +47,7 @@ main(void)
 		end_frame();
 	}
 
+	INFO("shutting down...");
 	shutdown_window();
 
 	return 0;

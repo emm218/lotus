@@ -18,9 +18,6 @@ release: clean all
 
 include $(patsubst %, %/.module.mk, $(MODULES))
 
-run: debug
-	@./target/engine
-
 compile_commands.json: Makefile
 	$(CLEAN)
 	bear -- make --no-print-directory --quiet
