@@ -3,7 +3,7 @@ CC=clang
 CFLAGS+=-Wall -Wextra -Werror -Iinclude
 LDFLAGS+=-fuse-ld=lld
 
-CLEAN:=rm -rf */*.o bin/* lib/*
+CLEAN:=rm -rf */*.o target/*
 
 MODULES:=engine
 
@@ -18,12 +18,8 @@ release: clean all
 
 include $(patsubst %, %/.module.mk, $(MODULES))
 
-bin/%:
-	@mkdir -p bin
-	$(LINK.c) $(LDLIBS) $^ -o $@
-
 run: debug
-	@./bin/engine
+	@./target/engine
 
 compile_commands.json: Makefile
 	$(CLEAN)

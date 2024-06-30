@@ -1,6 +1,5 @@
-bin
-lib
 *.o
+target
 .depend
 .cache
 compile_commands.json
