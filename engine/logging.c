@@ -15,10 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include <engine/logging.h>
+#include <stdarg.h>
+#include <stdio.h>
 
-int
-main(void)
+void
+_log_output(const char *message, ...)
 {
-	INFO("meow!");
-	return 0;
+	va_list arg_ptr;
+	va_start(arg_ptr, message);
+	vfprintf(stderr, message, arg_ptr);
+	va_end(arg_ptr);
 }
