@@ -19,7 +19,7 @@
 #include "logging.h"
 
 void
-vlog_output(const char *msg, va_list args)
+_vlog_output(const char *msg, va_list args)
 {
 	vfprintf(stderr, msg, args);
 }
@@ -29,6 +29,6 @@ _log_output(const char *msg, ...)
 {
 	va_list arg_ptr;
 	va_start(arg_ptr, msg);
-	vlog_output(msg, arg_ptr);
+	_vlog_output(msg, arg_ptr);
 	va_end(arg_ptr);
 }

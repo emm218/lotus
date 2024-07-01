@@ -17,7 +17,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include <engine/api.h>
+#include <lotus/api.h>
 
 void start_frame(void);
 void end_frame(void);

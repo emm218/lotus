@@ -17,7 +17,7 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
-#include <engine/api.h>
+#include <lotus/api.h>
 
 int init_window(app_info *);
 void shutdown_window(void);

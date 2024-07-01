@@ -26,14 +26,16 @@ typedef struct {
 
 typedef void(game_update_f)(long);
 typedef app_info(get_app_info_f)(void);
+typedef int(setup_f)(void);
 
 typedef struct {
 	game_update_f *update;
 	get_app_info_f *get_app_info;
+	setup_f *setup;
 } game_api;
 
 typedef struct {
-	void (*vlog_output)(const char *, va_list);
+	void (*_vlog_output)(const char *, va_list);
 	void (*request_close)(void);
 } engine_api;
 

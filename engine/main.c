@@ -15,8 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include <dlfcn.h>
-#include <engine/api.h>
+#include <lotus/api.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "logging.h"
 #include "platform.h"
@@ -32,6 +33,8 @@ int
 main(void)
 {
 	app_info app;
+	int status;
+
 	INFO("lotus engine v" VERSION);
 
 	load_game("target/game.so", &game, NULL);
@@ -41,13 +44,18 @@ main(void)
 
 	init_window(&app);
 
+	if (game.setup) {
+		status = game.setup();
+		if (status != 0)
+			return status;
+	}
+
 	while (!should_close()) {
 		poll_events();
 		start_frame();
 		end_frame();
 	}
 
-	INFO("shutting down...");
 	shutdown_window();
 
 	return 0;
@@ -62,7 +70,8 @@ load_game(const char *lib_path, game_api *game, void *old_lib)
 
 	INFO("loading %s...", lib_path);
 
-	game->update = NULL;
+	// null out all the function pointers
+	memset(game, 0, sizeof(*game));
 
 	if (old_lib && (dlclose(old_lib) != 0)) {
 		ERROR("%s", dlerror());
@@ -88,7 +97,7 @@ load_game(const char *lib_path, game_api *game, void *old_lib)
 		return lib_handle;
 	}
 
-	engine->vlog_output = vlog_output;
+	engine->_vlog_output = _vlog_output;
 	engine->request_close = request_close;
 
 	return lib_handle;

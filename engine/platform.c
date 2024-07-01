@@ -16,8 +16,8 @@
  */
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-#include <engine/logging.h>
 #include <glad/glad.h>
+#include <lotus/logging.h>
 
 #include "platform.h"
 #include "renderer.h"
