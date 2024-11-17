@@ -1,5 +1,19 @@
 const std = @import("std");
+const Platform = @import("platform.zig").Platform;
+const glfw = @import("glfw.zig");
+const Renderer = @import("Renderer.zig");
 
 pub fn main() !void {
-    std.debug.print("meow :3\n", .{});
+    try glfw.init();
+    defer glfw.terminate();
+
+    const window = try glfw.createWindow(800, 600, "meower");
+
+    const renderer = try Renderer.init();
+
+    while (!window.shouldClose()) {
+        try renderer.draw_frame();
+        window.swapBuffers();
+        glfw.pollEvents();
+    }
 }

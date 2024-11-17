@@ -12,13 +12,14 @@ pub fn build(b: *std.Build) void {
     });
 
     const gl_bindings = @import("zigglgen").generateBindingsModule(b, .{
-        .api = .gl,
-        .version = .@"3.3",
-        .profile = .core,
-        .extensions = &.{.KHR_debug},
+        .api = .gles,
+        .version = .@"2.0",
+        .extensions = &.{},
     });
 
     exe.root_module.addImport("gl", gl_bindings);
+    exe.linkSystemLibrary("glfw");
+    exe.linkLibC();
 
     b.installArtifact(exe);
 
