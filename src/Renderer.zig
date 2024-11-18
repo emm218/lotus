@@ -1,7 +1,5 @@
 const std = @import("std");
 const gl = @import("gl");
-const glfw = @import("renderer/glfw.zig");
-const Window = glfw.Window;
 
 const Renderer = @This();
 
@@ -15,17 +13,13 @@ pub fn destroy(self: Renderer) void {
     _ = self;
 }
 
-pub inline fn shouldClose(self: Renderer) bool {
-    return self.window.shouldClose();
-}
-
 pub fn drawFrame(self: Renderer) void {
     gl.ClearBufferfv(gl.COLOR, 0, &[4]f32{ 0.0, 0.0, 1.0, 1.0 });
     _ = self;
 }
 
 pub fn fbSizeCallback(
-    handle: ?glfw.Window.Handle,
+    handle: ?*anyopaque,
     width: c_int,
     height: c_int,
 ) callconv(.C) void {
