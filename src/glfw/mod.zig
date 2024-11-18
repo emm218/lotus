@@ -6,10 +6,10 @@
 
 const std = @import("std");
 const gl = @import("gl");
-const c = @import("glfw/c.zig").c;
-const errors = @import("glfw/errors.zig");
+const c = @import("c.zig").c;
+const errors = @import("errors.zig");
 
-pub const Window = @import("glfw/Window.zig");
+pub const Window = @import("Window.zig");
 pub const Error = errors.Error;
 pub const getError = errors.getError;
 

@@ -1,6 +1,6 @@
 const std = @import("std");
 const gl = @import("gl");
-const glfw = @import("../glfw.zig");
+const glfw = @import("mod.zig");
 const c = @import("c.zig").c;
 
 const Window = @This();

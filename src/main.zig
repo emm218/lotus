@@ -1,9 +1,9 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const gl = @import("gl");
-const glfw = @import("glfw.zig");
-const Renderer = @import("Renderer.zig");
-const debugCallback = @import("renderer/gl/debug.zig").callback;
+const glfw = @import("glfw/mod.zig");
+const Renderer = @import("renderer/Renderer.zig");
+const debugCallback = Renderer.debugCallback;
 
 var procs: gl.ProcTable = undefined;
 
@@ -31,11 +31,8 @@ pub fn main() !void {
     if (builtin.mode == .Debug)
         gl.DebugMessageCallback(@ptrCast(&debugCallback), null);
 
-    const renderer = Renderer.create();
+    var renderer = try Renderer.create();
     defer renderer.destroy();
-
-    // intentionally causing an error to test debug output
-    _ = gl.GetString(3);
 
     while (!window.shouldClose()) {
         renderer.drawFrame();
