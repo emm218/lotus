@@ -8,6 +8,8 @@ const Vbo = buffers.Vbo;
 const ShaderProgram = @import("ShaderProgram.zig");
 const Vao = @import("Vao.zig");
 const bufferData = buffers.bufferData;
+const unbindBuffer = buffers.unbindBuffer;
+const unbindVertexArray = Vao.unbindVertexArray;
 const vertexAttribPointer = Vao.vertexAttribPointer;
 
 const Renderer = @This();
@@ -32,6 +34,9 @@ pub fn create() !Renderer {
     vertexAttribPointer(0, 2, f32, false, @sizeOf(Vertex), 0);
 
     bufferData(&VERTEX_DATA, .array_buffer, .static_draw);
+
+    unbindBuffer(.array_buffer);
+    unbindVertexArray();
 
     return .{
         .vao = vao,

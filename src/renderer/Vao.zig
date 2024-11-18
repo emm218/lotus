@@ -21,6 +21,10 @@ pub fn bind(self: Vao) void {
     gl.BindVertexArray(self.id);
 }
 
+pub fn unbindVertexArray() void {
+    gl.BindVertexArray(0);
+}
+
 pub fn vertexAttribPointer(
     index: gl.uint,
     size: gl.int,

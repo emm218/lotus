@@ -31,6 +31,10 @@ pub const Vbo = struct {
     }
 };
 
+pub fn unbindBuffer(target: Target) void {
+    gl.BindBuffer(@intFromEnum(target), 0);
+}
+
 pub fn bufferData(buffer: anytype, target: Target, usage: Usage) void {
     const Slice = @typeInfo(@TypeOf(buffer)).Pointer;
     const T = Slice.child;
