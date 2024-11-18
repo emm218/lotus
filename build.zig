@@ -15,7 +15,9 @@ pub fn build(b: *std.Build) void {
         .api = .gl,
         .version = .@"3.3",
         .profile = .core,
-        .extensions = &.{},
+        .extensions = &.{
+            .KHR_debug,
+        },
     });
 
     exe.root_module.addImport("gl", gl_bindings);

@@ -1,6 +1,9 @@
 const std = @import("std");
+const builtin = @import("builtin");
 const gl = @import("gl");
-const glfw = @import("glfw.zig");
+const glfw = @import("renderer/glfw.zig");
+const debugCallback = @import("renderer/gl/debug.zig").callback;
+const Renderer = @import("Renderer.zig");
 
 var procs: gl.ProcTable = undefined;
 
@@ -11,10 +14,11 @@ pub fn main() !void {
     const window = try glfw.Window.create(800, 600, "lotus", .{
         .resizable = false,
         .opengl_forward_compat = true,
+        .context_debug = builtin.mode == .Debug,
     });
     defer window.destroy();
 
-    window.setFramebufferSizeCallback(&framebufferSizeCallback);
+    window.setFramebufferSizeCallback(&Renderer.fbSizeCallback);
 
     glfw.makeContextCurrent(window);
     defer glfw.makeContextCurrent(null);
@@ -24,20 +28,17 @@ pub fn main() !void {
     gl.makeProcTableCurrent(&procs);
     defer gl.makeProcTableCurrent(null);
 
-    while (!window.shouldClose()) {
-        gl.ClearBufferfv(gl.COLOR, 0, &[4]f32{ 0.0, 0.0, 1.0, 1.0 });
+    if (builtin.mode == .Debug)
+        gl.DebugMessageCallback(@ptrCast(&debugCallback), null);
 
+    const renderer = Renderer.create();
+    defer renderer.destroy();
+
+    _ = gl.GetString(3);
+
+    while (!window.shouldClose()) {
+        renderer.drawFrame();
         window.swapBuffers();
         glfw.pollEvents();
     }
-}
-
-fn framebufferSizeCallback(
-    window: ?glfw.Window.Handle,
-    width: c_int,
-    height: c_int,
-) callconv(.C) void {
-    _ = window;
-
-    gl.Viewport(0, 0, width, height);
 }
