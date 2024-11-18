@@ -19,11 +19,9 @@ pub fn drawFrame(self: Renderer) void {
 }
 
 pub fn fbSizeCallback(
-    handle: ?*anyopaque,
+    _: ?*anyopaque,
     width: c_int,
     height: c_int,
 ) callconv(.C) void {
-    _ = handle;
-
     gl.Viewport(0, 0, width, height);
 }

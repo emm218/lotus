@@ -31,19 +31,14 @@ const GlDebugSeverity = enum(gl.@"enum") {
 };
 
 pub fn callback(
-    source: GlDebugSource,
-    t: GlDebugType,
-    id: gl.uint,
+    _: GlDebugSource,
+    _: GlDebugType,
+    _: gl.uint,
     severity: GlDebugSeverity,
-    length: gl.sizei,
+    _: gl.sizei,
     msg: [*c]u8,
-    user: ?*anyopaque,
+    _: ?*anyopaque,
 ) callconv(.C) void {
-    _ = id;
-    _ = length;
-    _ = user;
-    _ = source;
-    _ = t;
     switch (severity) {
         .notification => log.info("{s}", .{msg}),
         .low, .medium => log.warn("{s}", .{msg}),
