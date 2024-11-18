@@ -12,7 +12,7 @@ pub fn main() !void {
     const renderer = try Renderer.init();
 
     while (!window.shouldClose()) {
-        try renderer.draw_frame();
+        try renderer.drawFrame();
         window.swapBuffers();
         glfw.pollEvents();
     }
