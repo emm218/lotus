@@ -30,8 +30,11 @@ pub fn create() !Renderer {
     errdefer vbo.destroy();
     vbo.bind(.array_buffer);
 
-    gl.EnableVertexAttribArray(0);
     vertexAttribPointer(0, 2, f32, false, @sizeOf(Vertex), 0);
+    gl.EnableVertexAttribArray(0);
+
+    vertexAttribPointer(1, 3, u8, true, @sizeOf(Vertex), @offsetOf(Vertex, "r"));
+    gl.EnableVertexAttribArray(1);
 
     bufferData(&VERTEX_DATA, .array_buffer, .static_draw);
 
@@ -52,7 +55,7 @@ pub fn destroy(self: *Renderer) void {
 }
 
 pub fn drawFrame(self: Renderer) void {
-    gl.ClearBufferfv(gl.COLOR, 0, &[4]f32{ 0.0, 0.0, 1.0, 1.0 });
+    gl.ClearBufferfv(gl.COLOR, 0, &[4]f32{ 0.0, 0.0, 0.0, 1.0 });
 
     self.vao.bind();
     self.program.use();
@@ -68,15 +71,18 @@ fn drawArrays(mode: DrawMode, first: gl.int, count: gl.sizei) void {
     gl.DrawArrays(@intFromEnum(mode), first, count);
 }
 
-const Vertex = struct {
+const Vertex = extern struct {
     x: f32,
     y: f32,
+    r: u8 = 0,
+    g: u8 = 0,
+    b: u8 = 0,
 };
 
 const VERTEX_DATA = [_]Vertex{
-    .{ .x = -0.5, .y = 0.5 },
-    .{ .x = 0.5, .y = 0.5 },
-    .{ .x = 0.0, .y = -0.5 },
+    .{ .x = -0.5, .y = 0.5, .r = 255, .g = 255 },
+    .{ .x = 0.5, .y = 0.5, .g = 255, .b = 255 },
+    .{ .x = 0.0, .y = -0.5, .r = 255, .b = 255 },
 };
 
 const VERTEX_SOURCE = @embedFile("shaders/triangle.vs");
