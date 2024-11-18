@@ -1,60 +1,80 @@
+//!
+//! ziggy glfw API. Mostly based on mach-glfw but I didn't feel like messing
+//! with mach's zig version requirements and this way I can just add glfw
+//! features as I need them.
+//!
+
 const std = @import("std");
 const gl = @import("gl");
-const c = @cImport({
-    @cDefine("GLFW_INCLUDE_NONE", "1");
-    @cInclude("GLFW/glfw3.h");
-});
+const c = @import("glfw/c.zig").c;
+const errors = @import("glfw/errors.zig");
 
-var procs: gl.ProcTable = undefined;
+pub const Window = @import("glfw/Window.zig");
+pub const Error = errors.Error;
+pub const getError = errors.getError;
 
-pub fn init() !void {
-    if (c.glfwInit() != c.GLFW_TRUE) {
-        return error.GlfwInitFailed;
-    }
+/// glfw init hints
+pub const Hints = struct {
+    platform: PlatformType = .any,
+    wayland_libdecor: WaylandLibDecorHint = .wayland_prefer_libdecor,
+    x11_xcb_vulkan_surface: bool = true,
 
-    c.glfwWindowHint(c.GLFW_CLIENT_API, c.GLFW_OPENGL_ES_API);
-    c.glfwWindowHint(c.GLFW_CONTEXT_VERSION_MAJOR, 2);
-    c.glfwWindowHint(c.GLFW_CONTEXT_VERSION_MINOR, 0);
-}
+    fn set(hints: Hints) void {
+        inline for (comptime std.meta.fieldNames(Hint)) |field_name| {
+            const tag = @intFromEnum(@field(Hint, field_name));
+            const val = @field(hints, field_name);
 
-pub const terminate = c.glfwTerminate;
+            switch (@TypeOf(val)) {
+                bool => c.glfwInitHint(tag, @intFromBool(val)),
 
-pub const Window = struct {
-    const Self = @This();
-
-    inner: *c.GLFWwindow,
-
-    pub inline fn swapBuffers(self: Self) void {
-        c.glfwSwapBuffers(self.inner);
-    }
-
-    pub inline fn shouldClose(self: Self) bool {
-        return c.glfwWindowShouldClose(self.inner) != 0;
+                PlatformType,
+                WaylandLibDecorHint,
+                => c.glfwInitHint(tag, @intFromEnum(val)),
+                else => unreachable,
+            }
+        }
     }
 };
 
-pub fn createWindow(width: u32, height: u32, title: [:0]const u8) !Window {
-    const glfw_window = c.glfwCreateWindow(
-        @intCast(width),
-        @intCast(height),
-        title,
-        null,
-        null,
-    ) orelse return error.WindowCreationFailed;
+const Hint = enum(c_int) {
+    platform = c.GLFW_PLATFORM,
+    wayland_libdecor = c.GLFW_WAYLAND_LIBDECOR,
+    x11_xcb_vulkan_surface = c.GLFW_X11_XCB_VULKAN_SURFACE,
+};
 
-    _ = c.glfwSetWindowSizeCallback(glfw_window, &resizeCallback);
-    c.glfwMakeContextCurrent(glfw_window);
+pub const WaylandLibDecorHint = enum(c_int) {
+    wayland_prefer_libdecor = c.GLFW_WAYLAND_PREFER_LIBDECOR,
+    wayland_disable_libdecor = c.GLFW_WAYLAND_DISABLE_LIBDECOR,
+};
 
-    if (!procs.init(c.glfwGetProcAddress)) return error.InitProcsFailed;
+pub const PlatformType = enum(c_int) {
+    any = c.GLFW_ANY_PLATFORM,
+    win32 = c.GLFW_PLATFORM_WIN32,
+    cocoa = c.GLFW_PLATFORM_COCOA,
+    wayland = c.GLFW_PLATFORM_WAYLAND,
+    x11 = c.GLFW_PLATFORM_X11,
+    null = c.GLFW_PLATFORM_NULL,
+};
 
-    gl.makeProcTableCurrent(&procs);
-
-    return Window{ .inner = glfw_window };
+pub fn init(hints: Hints) Error!void {
+    hints.set();
+    if (c.glfwInit() != c.GLFW_TRUE) return getError();
 }
 
-fn resizeCallback(window: ?*c.GLFWwindow, width: c_int, height: c_int) callconv(.C) void {
-    _ = window;
-    gl.Viewport(0, 0, width, height);
+pub const terminate = c.glfwTerminate;
+pub const getProcAddress = c.glfwGetProcAddress;
+
+pub fn pollEvents() void {
+    c.glfwPollEvents();
 }
 
-pub const pollEvents = c.glfwPollEvents;
+pub fn getPlatform() PlatformType {
+    return @enumFromInt(c.glfwGetPlatform());
+}
+
+pub fn makeContextCurrent(window: ?Window) void {
+    if (window) |w|
+        c.glfwMakeContextCurrent(w.handle)
+    else
+        c.glfwMakeContextCurrent(null);
+}
