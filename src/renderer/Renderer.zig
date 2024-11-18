@@ -85,8 +85,8 @@ const VERTEX_DATA = [_]Vertex{
     .{ .x = 0.0, .y = -0.5, .r = 255, .b = 255 },
 };
 
-const VERTEX_SOURCE = @embedFile("shaders/triangle.vs");
-const FRAGMENT_SOURCE = @embedFile("shaders/triangle.fs");
+const VERTEX_SOURCE = @embedFile("shaders/triangle.vert");
+const FRAGMENT_SOURCE = @embedFile("shaders/triangle.frag");
 
 pub fn fbSizeCallback(
     _: ?*anyopaque,
